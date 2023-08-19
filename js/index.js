@@ -11,4 +11,10 @@ document.addEventListener("DOMContentLoaded", function(){
         localStorage.setItem("catID", 103);
         window.location = "products.html"
     });
-});
+});});
+
+const isLoggedIn = localStorage.getItem("password") !== null && localStorage.getItem("email") !== null;
+window.addEventListener("load", () =>{
+if (!isLoggedIn){
+    window.location.href = "login.html";
+  }});
