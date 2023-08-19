@@ -96,12 +96,11 @@ footer p {
 }
 
 .alert {
-    margin-top: 2rem;
-    width: 50%;
-    left: 50%;
-    transform: translate(-50%, 0);
-  }
-  
+  margin-top: 2rem;
+  width: 50%;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
 
 .lds-ring {
   display: inline-block;
@@ -187,4 +186,15 @@ a.custom-card:hover {
 
 .checked {
   color: orange;
+}
+.form-floating {
+  margin-bottom: 1rem;
+}
+#login-form {
+  max-width: 330px;
+  margin: auto;
+  padding: 15px;
+}
+#login-form button {
+  margin-top: 1rem;
 }
