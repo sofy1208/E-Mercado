@@ -31,10 +31,3 @@ if (!isLoggedIn){
      li.textContent = logUser; //agrega el contenido dentro de logUser (el mail)
      navUser.appendChild(li); //agrega al navbar
    }
-const navUser = document.querySelector('.navbar-nav'); //llama a la lista del navbar
-if (logUser && navUser) {
-  const li = document.createElement('li'); //crea elemento li
-  li.classList.add('nav-link'); //agrega la clase de boostrap al elemento nuevo
-  li.textContent = logUser; //agrega el contenido dentro de logUser (el mail)
-  navUser.appendChild(li); //agrega al navbar
-}
