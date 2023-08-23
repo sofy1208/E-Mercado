@@ -35,6 +35,20 @@ function sortCategories(criteria, array){
     return result;
 }
 
+ //Visualización del mail en el navbar
+
+ const logUser = localStorage.getItem('email'); //Agarra el usuario que se guardo en el local al ingresar
+ const navUser = document.querySelector('.navbar-nav'); //llama a la lista del navbar
+ if (logUser && navUser) {
+   const li = document.createElement('li'); //crea elemento li
+   li.classList.add('nav-link'); //agrega la clase de boostrap al elemento nuevo
+   li.textContent = logUser; //agrega el contenido dentro de logUser (el mail)
+   navUser.appendChild(li); //agrega al navbar
+ }
+
+
+ // Mostrar categorías
+
 function setCatID(id) {
     localStorage.setItem("catID", id);
     window.location = "products.html"
