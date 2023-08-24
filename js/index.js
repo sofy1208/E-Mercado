@@ -31,3 +31,4 @@ if (!isLoggedIn){
      li.textContent = logUser; //agrega el contenido dentro de logUser (el mail)
      navUser.appendChild(li); //agrega al navbar
    }
+
