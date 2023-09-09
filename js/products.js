@@ -1,20 +1,11 @@
 const catID = localStorage.getItem("catID"); // Se obtiene el ID de categoría de productos almacenado en el almacenamiento local bajo la clave (key) "catID".
 const url = `https://japceibal.github.io/emercado-api/cats_products/${catID}.json`; // Se construye la URL para obtener los datos de productos de la categoría especificada 
 
-const url = "https://japceibal.github.io/emercado-api/cats_products/101.json";
 let productsData = []; // Variable para almacenar los datos de los productos
 let currentSortCriteria = "sortByCount"; // Criterio de orden actual
 let searchQuery = ""; // Consulta de búsqueda actual
 
-//Visualización del mail en el navbar
 
-const logUser = localStorage.getItem('email'); //Agarra el usuario que se guardo en el local al ingresar
-const navUser = document.querySelector('.navbar-nav'); //llama a la lista del navbar
-if (logUser && navUser) {
-  const li = document.createElement('li'); //crea elemento li
-  li.classList.add('nav-link'); //agrega la clase de boostrap al elemento nuevo
-  li.textContent = logUser; //agrega el contenido dentro de logUser (el mail)
-  navUser.appendChild(li); //agrega al navbar
 // Función asincrónica para obtener y mostrar los productos
 async function fetchProducts() {
     const response = await fetch(url); // Se obtiene la respuesta de la URL
@@ -34,35 +25,15 @@ async function fetchProducts() {
 
 }
 
-//traer productos de la API
 
-async function fetchProducts(){
 // Resto del código para mostrar los productos y la sección de filtros
 
-    const response = await fetch(url);
-    const data = await response.json();
 // Función para filtrar y mostrar productos
 function filterAndDisplayProducts() {
     // Se obtienen los valores actuales de los elementos de rango de precio y búsqueda
     const minPrice = parseFloat(document.getElementById("rangeFilterPriceMin").value) || 0;
     const maxPrice = parseFloat(document.getElementById("rangeFilterPriceMax").value) || Infinity;
 
-        const productsList = document.getElementById("products-list");
-        data.products.forEach(product => {
-            const productCard = document.createElement("div");
-            productCard.className = "card mb-3";
-            productCard.innerHTML = 
-            `<div class="row g-0">
-                <div class="col-md-4">
-                    <img src="${product.image}" alt="${product.name}" class="img-fluid">
-                </div>
-                <div class="col-md-8">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h3 class="card-title">${product.name} - ${product.currency} ${product.cost}</h3>
-                            <p class="card-text">${product.soldCount} vendidos</p>
-                        </div>
-                        <p class="card-text">${product.description}</p>
     // Se filtran los productos en base a rango de precio y búsqueda
     const filteredProducts = productsData.filter(product => {   //filteredProducts almacenará un nuevo array de productos filtrados a partir del array productsData
         const productPrice = parseFloat(product.cost); //Para cada producto en el array productsData, se obtiene el precio del producto y se convierte en un número de utilizando parseFloat().
@@ -96,11 +67,6 @@ function filterAndDisplayProducts() {
                     </div>
                     <p class="card-text">${product.description}</p>
                 </div>
-            </div>`
-                    ;
-            productsList.appendChild(productCard);
-        });
-    };
             </div>
         </div>
     `;
@@ -108,7 +74,6 @@ function filterAndDisplayProducts() {
     });
 }
 
-    fetchProducts();
 // Función para ordenar productos según el criterio proporcionado
 function sortProducts(productsArray, criteria) { // esta funcion toma como parámetros un array de productos (productsArray) y un criterio de ordenamiento (criteria)
     return productsArray.slice().sort((a, b) => { // devuelve un nuevo array ordenado, basado en el array de productos original (productsArray).Se crea una copia superficial (slice) del array de productos para evitar modificar el array original. Luego, se utiliza sort() para realizar el ordenamiento. 
