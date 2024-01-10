@@ -1,6 +1,7 @@
 const catID = localStorage.getItem("catID"); // Se obtiene el ID de categoría de productos almacenado en el almacenamiento local bajo la clave (key) "catID".
 const url = `https://japceibal.github.io/emercado-api/cats_products/${catID}.json`; // Se construye la URL para obtener los datos de productos de la categoría especificada 
 
+
 let productsData = []; // Variable para almacenar los datos de los productos
 let currentSortCriteria = "sortByCount"; // Criterio de orden actual
 let searchQuery = ""; // Consulta de búsqueda actual
@@ -35,10 +36,10 @@ function filterAndDisplayProducts() {
     const maxPrice = parseFloat(document.getElementById("rangeFilterPriceMax").value) || Infinity;
 
     // Se filtran los productos en base a rango de precio y búsqueda
-    const filteredProducts = productsData.filter(product => {   //filteredProducts almacenará un nuevo array de productos filtrados a partir del array productsData
-        const productPrice = parseFloat(product.cost); //Para cada producto en el array productsData, se obtiene el precio del producto y se convierte en un número de utilizando parseFloat().
-        return productPrice >= minPrice && productPrice <= maxPrice && // La función de filtro devuelve true o false para cada producto según si cumple o no con las condiciones de filtrado. 
-            (product.name.toLowerCase().includes(searchQuery) || // La descripción del producto, convertida a minúsculas, también debe incluir la searchQuery.
+    const filteredProducts = productsData.filter(product => {   
+        const productPrice = parseFloat(product.cost); 
+        return productPrice >= minPrice && productPrice <= maxPrice && 
+            (product.name.toLowerCase().includes(searchQuery) || 
                 product.description.toLowerCase().includes(searchQuery));
     });
 
@@ -55,6 +56,7 @@ function filterAndDisplayProducts() {
         const productCard = document.createElement("div");
         productCard.className = "card mb-3";
         productCard.innerHTML = ` 
+        <a href="product-info.html" class="product-link" data-product-id="${product.id}">
         <div class="row g-0">
             <div class="col-md-4">
                 <img src="${product.image}" alt="${product.name}" class="img-thumbnail">
@@ -71,20 +73,26 @@ function filterAndDisplayProducts() {
         </div>
     `;
         productsList.appendChild(productCard);
+        
+    const productLink = productCard.querySelector(".product-link");
+    productLink.addEventListener("click", () => {
+        // Guarda el identificador del producto en el almacenamiento local
+        localStorage.setItem("selectedProductId", product.id);
+    });
     });
 }
 
 // Función para ordenar productos según el criterio proporcionado
-function sortProducts(productsArray, criteria) { // esta funcion toma como parámetros un array de productos (productsArray) y un criterio de ordenamiento (criteria)
-    return productsArray.slice().sort((a, b) => { // devuelve un nuevo array ordenado, basado en el array de productos original (productsArray).Se crea una copia superficial (slice) del array de productos para evitar modificar el array original. Luego, se utiliza sort() para realizar el ordenamiento. 
-        if (criteria === "sortAscPrice") { // Se verifica el criterio de ordenamiento proporcionado. Si es "sortAscPrice", se realizará un orden ascendente por precio.
-            return parseFloat(a.cost) - parseFloat(b.cost); //Para orden ascendente por precio, se resta el precio del producto a del precio del producto b. Esto crea una comparación numérica que ordenará los productos por precio ascendente.
-        } else if (criteria === "sortDescPrice") { //  Si el criterio es "sortDescPrice", se realizará un orden descendente por precio.
-            return parseFloat(b.cost) - parseFloat(a.cost); // Para orden descendente por precio, se resta el precio del producto b del precio del producto a. Esto crea una comparación numérica que ordenará los productos por precio descendente.
-        } else if (criteria === "sortDescRelevance") { //Si el criterio es "sortDescRelevance", se realizará un orden descendente por relevancia (cantidad vendida).
-            return parseInt(b.soldCount) - parseInt(a.soldCount); //Para orden descendente por relevancia, se resta la cantidad vendida del producto b de la cantidad vendida del producto a. Esto ordenará los productos por cantidad vendida descendente.
+function sortProducts(productsArray, criteria) { 
+    return productsArray.slice().sort((a, b) => {  
+        if (criteria === "sortAscPrice") { 
+            return parseFloat(a.cost) - parseFloat(b.cost);  
+        } else if (criteria === "sortDescPrice") { 
+            return parseFloat(b.cost) - parseFloat(a.cost); 
+        } else if (criteria === "sortDescRelevance") { 
+            return parseInt(b.soldCount) - parseInt(a.soldCount); 
         } else {
-            return 0; // No hay ordenamiento, mantiene el orden actual
+            return 0; 
         }
     });
 }
@@ -94,32 +102,32 @@ document.addEventListener("DOMContentLoaded", function () {
     fetchProducts(); // Se obtienen y muestran los productos iniciales
 
     // Agrega listeners para los botones de ordenamiento y filtros
-    document.getElementById("sortAscPrice").addEventListener("click", function () { // Cuando el botón "Ordenar Ascendente" es clickeado
-        currentSortCriteria = "sortAscPrice";  // Se actualiza el criterio de orden actual
-        filterAndDisplayProducts();   // Se llama a la función filterAndDisplayProducts() para aplicar el nuevo orden y mostrar los productos
+    document.getElementById("sortAscPrice").addEventListener("click", function () { 
+        currentSortCriteria = "sortAscPrice";  
+        filterAndDisplayProducts();   
     });
 
-    document.getElementById("sortDescPrice").addEventListener("click", function () { // Cuando el botón "Ordenar Descendente" es clickeado
-        currentSortCriteria = "sortDescPrice"; // Se actualiza el criterio de orden actual
-        filterAndDisplayProducts();  // Se llama a la función filterAndDisplayProducts() para aplicar el nuevo orden y mostrar los productos
+    document.getElementById("sortDescPrice").addEventListener("click", function () { 
+        currentSortCriteria = "sortDescPrice";
+        filterAndDisplayProducts();  
     });
 
-    document.getElementById("sortDescRelevance").addEventListener("click", function () { // Cuando el botón "Ordenar por Relevancia" es clickeado
-        currentSortCriteria = "sortDescRelevance"; // Se actualiza el criterio de orden actual
-        filterAndDisplayProducts();  // Se llama a la función filterAndDisplayProducts() para aplicar el nuevo orden y mostrar los productos
+    document.getElementById("sortDescRelevance").addEventListener("click", function () { 
+        currentSortCriteria = "sortDescRelevance"; 
+        filterAndDisplayProducts();  
     });
 
     // Escuchador de evento para la entrada de búsqueda
     document.getElementById("searchInput").addEventListener("input", function () {  
-        searchQuery = this.value.toLowerCase(); // Se actualiza la consulta de búsqueda actual en minúsculas
-        filterAndDisplayProducts();   // Se llama a la función filterAndDisplayProducts() para aplicar la nueva búsqueda y mostrar los productos
+        searchQuery = this.value.toLowerCase(); 
+        filterAndDisplayProducts();   
     });
 
     // Escuchadores de evento para los botones de limpieza y rango de precio
-    document.getElementById("clearRangeFilter").addEventListener("click", function () { // Cuando el botón "Limpiar" es clickeado
-        document.getElementById("rangeFilterPriceMin").value = "";  // Se limpian los valores de los elementos de rango de precio
-        document.getElementById("rangeFilterPriceMax").value = "";  // Se limpian los valores de los elementos de rango de precio
-        filterAndDisplayProducts();  // Se llama a la función filterAndDisplayProducts() para aplicar los cambios y mostrar los productos
+    document.getElementById("clearRangeFilter").addEventListener("click", function () { 
+        document.getElementById("rangeFilterPriceMin").value = "";  
+        document.getElementById("rangeFilterPriceMax").value = "";  
+        filterAndDisplayProducts();  
     });
 
     // Cuando ocurre un evento de click en los elementos relacionados con el rango de precio
@@ -127,14 +135,114 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("rangeFilterPriceMin").addEventListener("click", filterAndDisplayProducts);
     document.getElementById("rangeFilterPriceMax").addEventListener("click", filterAndDisplayProducts);
 
+
+
 });
 
+//Visualización del mail en el navbar
+const logUser = localStorage.getItem('email');
+const emailDropdown = document.getElementById('emailDropdown');
 
-const logUser = localStorage.getItem('email'); //Agarra el usuario que se guardo en el local al ingresar
-const navUser = document.querySelector('.navbar-nav'); //llama a la lista del navbar
-if (logUser && navUser) {
-    const li = document.createElement('li'); //crea elemento li
-    li.classList.add('nav-link'); //agrega la clase de boostrap al elemento nuevo
-    li.textContent = logUser; //agrega el contenido dentro de logUser (el mail)
-    navUser.appendChild(li); //agrega al navbar
+if (logUser && emailDropdown) {
+    emailDropdown.textContent = logUser;
 }
+
+ //Para cerrar sesion
+ const isLoggedIn = localStorage.getItem("password") !== null && localStorage.getItem("email") !== null;
+ window.addEventListener("load", () => {
+   if (!isLoggedIn) {
+     window.location.href = "login.html";
+   }
+ });
+ 
+ // Agrega un evento de escucha al botón "Cerrar sesión"
+ const logoutButton = document.getElementById("logout");
+ if (logoutButton) {
+   logoutButton.addEventListener("click", () => {
+     // Elimina las credenciales almacenadas en el almacenamiento local
+     localStorage.removeItem("email");
+     localStorage.removeItem("password");
+     // Redirige al usuario a la página de inicio de sesión
+     window.location.href = "login.html";
+   });
+ }
+
+ /*!
+ Inicio del codigo darkmode/light/auto
+ */
+
+(() => {
+    'use strict'
+  
+    const storedTheme = localStorage.getItem('theme')
+  
+    const getPreferredTheme = () => {
+      if (storedTheme) {
+        return storedTheme
+      }
+  
+      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+  
+    const setTheme = function (theme) {
+      if (theme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark')
+      } else {
+        document.documentElement.setAttribute('data-bs-theme', theme)
+      }
+    }
+  
+    setTheme(getPreferredTheme())
+  
+    const showActiveTheme = (theme, focus = false) => {
+      const themeSwitcher = document.querySelector('#bd-theme')
+  
+      if (!themeSwitcher) {
+        return
+      }
+  
+      const themeSwitcherText = document.querySelector('#bd-theme-text')
+      const activeThemeIcon = document.querySelector('.theme-icon-active use')
+      const btnToActive = document.querySelector(`[data-bs-theme-value="${theme}"]`)
+      const svgOfActiveBtn = btnToActive.querySelector('svg use').getAttribute('href')
+  
+      document.querySelectorAll('[data-bs-theme-value]').forEach(element => {
+        element.classList.remove('active')
+        element.setAttribute('aria-pressed', 'false')
+      })
+  
+      btnToActive.classList.add('active')
+      btnToActive.setAttribute('aria-pressed', 'true')
+      activeThemeIcon.setAttribute('href', svgOfActiveBtn)
+      const themeSwitcherLabel = `${themeSwitcherText.textContent} (${btnToActive.dataset.bsThemeValue})`
+      themeSwitcher.setAttribute('aria-label', themeSwitcherLabel)
+  
+      if (focus) {
+        themeSwitcher.focus()
+      }
+    }
+  
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (storedTheme !== 'light' || storedTheme !== 'dark') {
+        setTheme(getPreferredTheme())
+      }
+    })
+  
+    window.addEventListener('DOMContentLoaded', () => {
+      showActiveTheme(getPreferredTheme())
+  
+      document.querySelectorAll('[data-bs-theme-value]')
+        .forEach(toggle => {
+          toggle.addEventListener('click', () => {
+            const theme = toggle.getAttribute('data-bs-theme-value')
+            localStorage.setItem('theme', theme)
+            setTheme(theme)
+            showActiveTheme(theme, true)
+          })
+        })
+    })
+  })()
+
+  /*!
+ Fin del codigo darkmode/light/auto
+ */
